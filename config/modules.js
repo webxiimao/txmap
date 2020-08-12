@@ -62,6 +62,7 @@ function getAdditionalModulePaths(options = {}) {
  * @param {*} options
  */
 function getWebpackAliases(options = {}) {
+  console.log(options);
   const baseUrl = options.baseUrl;
 
   if (!baseUrl) {
@@ -129,7 +130,6 @@ function getModules() {
   const options = config.compilerOptions || {};
 
   const additionalModulePaths = getAdditionalModulePaths(options);
-
   return {
     additionalModulePaths: additionalModulePaths,
     webpackAliases: getWebpackAliases(options),
