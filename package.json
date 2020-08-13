@@ -79,6 +79,14 @@
       "last 1 safari version"
     ]
   },
+  "eslintConfig": {
+    "extends": "react-app",
+    "rules": {
+      "no-undef": "off",
+      "no-restricted-globals": "off",
+      "no-unused-vars": "off"
+    }
+  },
   "jest": {
     "roots": [
       "<rootDir>/src"
