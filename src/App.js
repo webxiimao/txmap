@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { HashRouter as Router, Link, Route } from 'react-router-dom';
 import './App.css';
-import Marker from './views/Marker'
-
+import Marker from './views/Marker/Marker'
+import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component {
   render() {
     return (
@@ -10,7 +10,9 @@ class App extends Component {
         <div className="App">
           <Link to="/">点标记</Link>
           <hr/>
-          <Route path="/" exact component={Marker}></Route>
+            <div>
+              <Route path="/" exact component={Marker}></Route>
+            </div>
         </div>
       </Router>
     );

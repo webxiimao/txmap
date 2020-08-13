@@ -4,13 +4,13 @@ let fetch = axios.create({
     timeout: 5000 // request timeout
 })
 fetch.interceptors.request.use(config => {
-    if (config.method === 'post' || config.method === 'put' || config.method === 'delete') {
+    if (config.method === 'post' || config.method === 'put' || config.method === 'delete' || config.method === 'get') {
         if (typeof(config.data) !== 'string' && config.headers['Content-Type'] !== 'multipart/form-data') {
             config.data = qs.stringify(config.data)
         }
     }
     config.params = {
-        ...config.params,
+        ...(config.params || {}),
         key: process.env.TX_MAP_KEY
     }
     return config
@@ -19,8 +19,8 @@ fetch.interceptors.request.use(config => {
 })
 
 fetch.interceptors.response.use(async data => {
-    if (data.status === '0') {
-        return data
+    if (data.data.status === 0) {
+        return data.data
     } else {
         throw data
     }
