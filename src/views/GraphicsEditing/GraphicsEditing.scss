@@ -1,0 +1,59 @@
+#toolControl {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    width: 126px;
+    z-index: 1001;
+}
+.toolItem {
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin: 1px;
+    padding: 4px;
+    border-radius: 3px;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    box-shadow: 0 1px 2px 0 #E4E7EF;
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
+}
+.toolItem:hover {
+    border-color: #789CFF;
+}
+.active {
+    border-color: #D5DFF2;
+    background-color: #D5DFF2;
+}
+
+#delete {
+    background-image: url('https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/delete.png');
+}
+#split {
+    background-image: url('https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/split.png');
+}
+#union {
+    background-image: url('https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/union.png');
+}
+#marker {
+    background-image: url('https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/marker_editor.png');
+}
+#polyline {
+    background-image: url('https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/polyline.png');
+}
+#polygon {
+    background-image: url('https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/polygon.png');
+}
+#circle {
+    background-image: url('https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/circle.png');
+}
+.footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    text-align: left;
+}

@@ -8,7 +8,7 @@ export function initMap(pos, props = {}){
     //定义map变量，调用 TMap.Map() 构造函数创建地图
     return new TMap.Map(document.getElementById('container'), {
         center: center,//设置地图中心点坐标
-        zoom: 17.2,   //设置地图缩放级别
+        zoom: 17,   //设置地图缩放级别
         ...props
     });
 }

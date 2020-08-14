@@ -14,7 +14,7 @@ export default function MyMap({pos, mapConfig, getCtx }){
     const style = {
         width: '100%',
         height: '100%',
-        paddingTop: '30px',
+        // paddingTop: '30px',
         position: 'absolute',
         top: 0,
         zIndex: '-1'
