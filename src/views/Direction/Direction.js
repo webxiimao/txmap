@@ -22,6 +22,7 @@ function parserPolyline(polyline){
 // planType 0 1 2
 export default () => {
     const [ map, setMapCtx ] = useState()
+    const [ measureTitle, setMeasureTitle ] = useState(true)
     // const [ planType, setPlanType ] = useState(0)
     const planType = useRef(0)
     const route = useRef()
@@ -168,8 +169,10 @@ export default () => {
     const measure = () => {
         cleanup()
         canPlanRoute.current = false
+        setMeasureTitle(false)
         measureTool.current.measureDistance().then(res => {
             canPlanRoute.current = true
+            setMeasureTitle(true)
         })
     }
     return <>
@@ -178,7 +181,7 @@ export default () => {
             <Padding pad={'5px'}/>
             <Button onClick={clearRouter} variant="secondary">清空路径</Button>
             <br/><br/>
-            <Button onClick={measure} variant="secondary">点击这里开始测量</Button>
+            <Button onClick={measure} variant={ measureTitle ? 'secondary' : 'primary'}>{measureTitle ? '点击这里开始测量' : '双击结束测量'}</Button>
         </div>
         <MyMap getCtx={getRef} />
         <div className="footer">
