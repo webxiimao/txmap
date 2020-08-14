@@ -6,6 +6,7 @@ import { useSetStateCb } from '@/hooks'
 import { InputGroup, FormControl, Button, Card, Form } from 'react-bootstrap'
 import api from '@/request/api'
 import { get } from 'lodash'
+import Padding from '@/components/Padding'
 
 function formatPoi(obj){
     return `${obj.lat},${obj.lng}`
@@ -26,6 +27,7 @@ export default () => {
     const route = useRef()
     const marker = useRef({})
     const startPoint = useRef()
+    const infoWindow = useRef({})
     const endPoint = useRef()
     const getRef = ref => {
         setMapCtx(ref)
@@ -37,6 +39,17 @@ export default () => {
         initMap()
         initMarker()
         initRouter()
+        initInfoWindow()
+    }
+    function initInfoWindow(){
+        infoWindow.current = new TMap.InfoWindow({
+            map,
+            position: map.getCenter(),
+            offset: {   // 设置信息弹窗的偏移量，否则会和marker重合
+              x: 0,
+              y: -48
+            }
+        }).close();
     }
     function initMarker(){
         marker.current = new TMap.MultiMarker({
@@ -69,10 +82,8 @@ export default () => {
     }
     function initMap(){
         map.on('click', evt => {
+            if (planType.current === 2)return
             const latLng = evt.latLng
-            if (!planType.current) {
-                cleanup()
-            }
             const curPlanType = planType.current + 1
             if (curPlanType === 1) {
                 startPoint.current = latLng
@@ -83,7 +94,7 @@ export default () => {
                 position: latLng,
                 styleId: curPlanType === 1 ? 'start' : 'end'
             })
-            planType.current = curPlanType === 2 ? 0 : curPlanType
+            planType.current = curPlanType
         })
     }
     const initRouter = () => {
@@ -101,6 +112,15 @@ export default () => {
             },
             geometries: [],
         });
+        route.current.on('click', evt => {
+            const content = `<div>
+                <p>预计总距离: ${evt.geometry.properties.distance}</p>
+                <p>预计总时间: ${evt.geometry.properties.duration}</p>
+            </div>`
+            infoWindow.current.open();
+            infoWindow.current.setPosition(evt.geometry.position);  // 设置信息窗口的坐标
+            infoWindow.current.setContent(content);   
+        })
     }
     const planRouter = () => {
         if (!startPoint.current || !endPoint.current){
@@ -111,7 +131,7 @@ export default () => {
             to: formatPoi(endPoint.current),
         }).then(res => {
             const routes = get(res, 'result.routes[0]', {})
-            const { steps, polyline } = routes
+            const { steps, polyline, distance, duration } = routes
             const formatLine = parserPolyline(polyline)
             // const paths = formatLine.reduce(point => {
             //     return new TMap.LatLng(get(point, 'location.lat'), get(point, 'location.lng'))
@@ -124,19 +144,31 @@ export default () => {
             }
             route.current.setGeometries([{
                 styleId: 'style_blue',
-                paths
+                paths,
+                properties: {
+                    distance: distance + '米',
+                    duration: duration + '分钟'
+                }
             }])
         })
+    }
+    const clearRouter = () => {
+        cleanup()
+        planType.current = 0
     }
     return <>
         <div style={{ textAlign: 'left', marginLeft: '25px' }}>
             <Button onClick={planRouter} variant="secondary">路径规划</Button>
+            <Padding pad={'5px'}/>
+            <Button onClick={clearRouter} variant="secondary">清空路径</Button>
         </div>
         <MyMap getCtx={getRef} />
         <div className="footer">
+            默认采用驾车路线<br/>
             点击地图设置起点<br/>
             点击地图设置终点<br/>
-            点击【路线规划】按钮展示路径
+            点击【路线规划】按钮展示路径<br/>
+            点击路径 展示 距离和时间
         </div>
     </>
 }

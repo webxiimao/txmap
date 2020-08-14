@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default () => {
-    return <i style={{ padding: '0 15px' }}></i>
+export default (props) => {
+    return <i style={{ padding: '0 ' + (props.pad || '15px') }}></i>
 }
