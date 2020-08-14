@@ -26,9 +26,11 @@ export default () => {
     const planType = useRef(0)
     const route = useRef()
     const marker = useRef({})
+    const measureTool = useRef({})
     const startPoint = useRef()
     const infoWindow = useRef({})
     const endPoint = useRef()
+    const canPlanRoute = useRef(true)
     const getRef = ref => {
         setMapCtx(ref)
     }
@@ -40,6 +42,7 @@ export default () => {
         initMarker()
         initRouter()
         initInfoWindow()
+        initMeasureTool()
     }
     function initInfoWindow(){
         infoWindow.current = new TMap.InfoWindow({
@@ -50,6 +53,11 @@ export default () => {
               y: -48
             }
         }).close();
+    }
+    function initMeasureTool() {
+        measureTool.current = new TMap.tools.MeasureTool({
+            map: map
+        });
     }
     function initMarker(){
         marker.current = new TMap.MultiMarker({
@@ -82,7 +90,7 @@ export default () => {
     }
     function initMap(){
         map.on('click', evt => {
-            if (planType.current === 2)return
+            if (planType.current === 2 || !canPlanRoute.current)return
             const latLng = evt.latLng
             const curPlanType = planType.current + 1
             if (curPlanType === 1) {
@@ -113,12 +121,13 @@ export default () => {
             geometries: [],
         });
         route.current.on('click', evt => {
+            console.log(evt);
             const content = `<div>
                 <p>预计总距离: ${evt.geometry.properties.distance}</p>
                 <p>预计总时间: ${evt.geometry.properties.duration}</p>
             </div>`
             infoWindow.current.open();
-            infoWindow.current.setPosition(evt.geometry.position);  // 设置信息窗口的坐标
+            infoWindow.current.setPosition(evt.latLng);  // 设置信息窗口的坐标
             infoWindow.current.setContent(content);   
         })
     }
@@ -156,11 +165,20 @@ export default () => {
         cleanup()
         planType.current = 0
     }
+    const measure = () => {
+        cleanup()
+        canPlanRoute.current = false
+        measureTool.current.measureDistance().then(res => {
+            canPlanRoute.current = true
+        })
+    }
     return <>
         <div style={{ textAlign: 'left', marginLeft: '25px' }}>
             <Button onClick={planRouter} variant="secondary">路径规划</Button>
             <Padding pad={'5px'}/>
             <Button onClick={clearRouter} variant="secondary">清空路径</Button>
+            <br/><br/>
+            <Button onClick={measure} variant="secondary">点击这里开始测量</Button>
         </div>
         <MyMap getCtx={getRef} />
         <div className="footer">
