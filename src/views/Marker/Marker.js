@@ -78,6 +78,7 @@ export default () => {
                 <p>名称: ${evt.geometry.properties.title}</p>
                 <p>地址: ${evt.geometry.properties.address}</p>
                 <p>电话: ${evt.geometry.properties.tel}</p>
+                <p>类型：${evt.geometry.properties.category}</p>
               </div>
             `: `<div>
                 <p>${evt.geometry.properties.content}</p>
@@ -97,7 +98,8 @@ export default () => {
               properties: {
                 title: item.title,
                 address: item.address,
-                tel: item.tel!==' ' ? item.tel : '暂无'
+                tel: item.tel!==' ' ? item.tel : '暂无',
+                category: item.category
               }
             });
             // 寻找搜索结果的边界
