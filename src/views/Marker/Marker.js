@@ -34,12 +34,13 @@ export default () => {
                 const latLng = evt.latLng
                 api.geocoder({
                     location: `${latLng.lat},${latLng.lng}`
-                })
-                marker.current.add({
-                    position: latLng,
-                    properties: {
-                        
-                    }
+                }).then(res => {
+                    marker.current.add({
+                        position: latLng,
+                        properties: {
+                            content: `地址：${res.result.address}`
+                        }
+                    })
                 })
             }
         })
@@ -72,13 +73,15 @@ export default () => {
         });
         marker.current.on('click', evt => {
             if (!evt.geometry.properties) return
-            let content = `
+            let content = !evt.geometry.properties.content ? `
               <div>
                 <p>名称: ${evt.geometry.properties.title}</p>
                 <p>地址: ${evt.geometry.properties.address}</p>
                 <p>电话: ${evt.geometry.properties.tel}</p>
               </div>
-            `
+            `: `<div>
+                <p>${evt.geometry.properties.content}</p>
+            </div>`
             infoWindow.current.open();
             infoWindow.current.setPosition(evt.geometry.position);  // 设置信息窗口的坐标
             infoWindow.current.setContent(content);   // 设置信息窗口的内容

@@ -38,6 +38,8 @@
     "jest-environment-jsdom-fourteen": "1.0.1",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
+    "jsonp": "^0.2.1",
+    "lodash": "^4.17.20",
     "mini-css-extract-plugin": "0.9.0",
     "node-sass": "^4.14.1",
     "optimize-css-assets-webpack-plugin": "5.0.3",
@@ -147,6 +149,5 @@
     "presets": [
       "react-app"
     ]
-  },
-  "proxy": "https://apis.map.qq.com/ws"
+  }
 }

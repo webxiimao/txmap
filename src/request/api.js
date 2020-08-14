@@ -1,17 +1,10 @@
 import request from './axios'
+import jsonp from './jsonp'
 export default {
     geocoder(params){
-        return request({
-            url: '/geocoder/v1/',
-            method: 'get',
-            params
-        })
+        return jsonp('/geocoder/v1/', params)
     },
     search(params){
-        return request({
-            url: '/place/v1/search',
-            method: 'get',
-            params
-        })
+        return jsonp('/place/v1/search', params)
     },
 }
