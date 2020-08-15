@@ -6,7 +6,7 @@ import { DEFAULT_POS } from '@/config/constant'
 
 export default function MyMap({pos, mapConfig, getCtx }){
     useEffect(() => {
-        const mapCtx = initMap(pos || DEFAULT_POS)
+        const mapCtx = initMap(pos || DEFAULT_POS, mapConfig)
         if (getCtx) {
             getCtx(mapCtx)
         }

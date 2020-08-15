@@ -65,6 +65,7 @@ export default () => {
     const [ toolType, setToolType ] = useState(false)
     const [ modalShow, setModalShow ] = useState(false)
     const [ selectInfo, setSelectInfo ] = useState()
+    const [ activeType, setActiveType ] = useState()
     const editor = useRef({})
     const getRef = (ref) => {
         setMapCtx(ref)
@@ -128,11 +129,13 @@ export default () => {
     }
     const changeToolType = e => {
         const value = e.target.checked
+        setActiveType()
         setToolType(value)
         const type = value ? TMap.tools.constants.EDITOR_ACTION.INTERACT : TMap.tools.constants.EDITOR_ACTION.DRAW
         editor.current.setActionMode(type)
     }
     const setActiveOverlay = type => {
+        setActiveType(type)
         editor.current.setActiveOverlay(type)
     }
     // 获取选中的详情
@@ -149,9 +152,9 @@ export default () => {
         </div>
         <div id="toolControl">
             { !toolType ? <>
-                <div className="toolItem" id="polyline" onClick={() => setActiveOverlay('polyline')} title="折线"></div>
-                <div className="toolItem" id="polygon" onClick={() => setActiveOverlay('polygon')} title="多边形"></div>
-                <div className="toolItem" id="circle" onClick={() => setActiveOverlay('circle')} title="圆形"></div>
+                <div className={'toolItem ' + (activeType === 'polyline' ? 'active' : '')} id="polyline" onClick={() => setActiveOverlay('polyline')} title="折线"></div>
+                <div className={'toolItem ' + (activeType === 'polygon' ? 'active' : '')} id="polygon" onClick={() => setActiveOverlay('polygon')} title="多边形"></div>
+                <div className={'toolItem ' + (activeType === 'circle' ? 'active' : '')} id="circle" onClick={() => setActiveOverlay('circle')} title="圆形"></div>
             </> : <>
                 <div className="toolItem" id="delete" onClick={deleteAction} title="删除"></div>
                 <div className="toolItem" id="split" onClick={splitAction} title="拆分"></div>
@@ -160,7 +163,7 @@ export default () => {
         </div>
         <MyMap pos={defaultPos} getCtx={getRef} />
         <div className="footer">
-            { toolType? <div>单选：鼠标左键点击图形<br/>
+            { toolType? <div>单选：鼠标左键点击图形，选中图形获取位置信息<br/>
                 多选：按下ctrl键后点击多个图形<br/>
                 删除：选中图形后按下delete键或点击删除按钮可删除图形<br/>
                 编辑：选中图形后出现编辑点，拖动编辑点可移动顶点位置，双击实心编辑点可删除顶点<br/>
