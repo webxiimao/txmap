@@ -119,6 +119,11 @@ export default () => {
     function clearMarker(){
         marker.current.setGeometries([])
     }
+    const [ showAddMarker, setShowAddMarker ] = useState(false)
+    function addMarker(){
+        isAddMarker.current = !isAddMarker.current
+        setShowAddMarker(isAddMarker.current)
+    }
     return <>
         <div className="content">
             <InputGroup className="mb-3 input">
@@ -127,13 +132,20 @@ export default () => {
                     placeholder="请输入位置"
                     aria-label="Recipient's username"
                     aria-describedby="basic-addon2"
+                    onKeyUp={e => {
+                        if(e.keyCode === 13){
+                            search()
+                        }
+                    }}
                 />
                 <InputGroup.Append>
                 <Button onClick={search} variant="primary">搜索</Button>
                 </InputGroup.Append>
             </InputGroup>
             <Button onClick={clearMarker} variant="secondary">清空marker</Button>
-            <Form.Check value={isAddMarker} onChange={(e) => isAddMarker.current = (e.target.checked)} label="手动添加marker" aria-label="option 1"/>
+            <br/>
+            <br/>
+            <Button onClick={addMarker} variant={showAddMarker ? 'primary': 'secondary'}>{showAddMarker ? '取消手动添加marker': '手动添加marker'}</Button>
         </div>
         <MyMap getCtx={getRef} />
     </>

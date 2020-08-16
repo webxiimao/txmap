@@ -128,7 +128,7 @@ export default () => {
         editor.current.union(e)
     }
     const changeToolType = e => {
-        const value = e.target.checked
+        const value = !toolType
         setActiveType()
         setToolType(value)
         const type = value ? TMap.tools.constants.EDITOR_ACTION.INTERACT : TMap.tools.constants.EDITOR_ACTION.DRAW
@@ -147,7 +147,9 @@ export default () => {
     }
     return <>
         <div style={{ textAlign: 'left', marginLeft: '20px' }}>
-            <Form.Check value={toolType} onChange={changeToolType} label="编辑模式" aria-label="option 1"/>
+            <Button  variant={toolType ? 'primary': 'secondary'} onClick={changeToolType}>{ toolType ? '取消编辑模式' : '编辑模式' }</Button>
+            <br/>
+            <br/>
             { toolType ? <Button onClick={getSelectedInfo} variant="secondary">获取选中图形信息</Button>: null }
         </div>
         <div id="toolControl">
