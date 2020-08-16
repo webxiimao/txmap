@@ -7,6 +7,7 @@ import Direction from "./views/Direction/Direction"
 import PointLayout from "./views/PointLayout/PointLayout"
 import ArcLayout from "./views/ArcLayout/ArcLayout"
 import TrailLayout from "./views/TrailLayout/TrailLayout"
+import HeatLayout from "./views/HeatLayout/HeatLayout"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Padding from '@/components/Padding'
 
@@ -27,6 +28,8 @@ class App extends Component {
             <Link to="/arcLayout">弧线图</Link>
             <Padding />
             <Link to="/trailLayout">轨迹图</Link>
+            <Padding />
+            <Link to="/heatLayout">热力图</Link>
           </div>
           <hr/>
             <div>
@@ -36,6 +39,7 @@ class App extends Component {
               <Route path="/pointLayout" exact component={PointLayout}></Route>
               <Route path="/arcLayout" exact component={ArcLayout}></Route>
               <Route path="/trailLayout" exact component={TrailLayout}></Route>
+              <Route path="/heatLayout" exact component={HeatLayout}></Route>
             </div>
         </div>
       </Router>
