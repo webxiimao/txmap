@@ -9,5 +9,8 @@ export default {
     },
     direction(params){
         return jsonp('/direction/v1/driving/', params)
+    },
+    suggestion(params){
+        return jsonp('/place/v1/suggestion', params)
     }
 }

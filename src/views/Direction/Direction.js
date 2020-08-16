@@ -7,11 +7,8 @@ import { InputGroup, FormControl, Button, Card, Form } from 'react-bootstrap'
 import api from '@/request/api'
 import { get } from 'lodash'
 import Padding from '@/components/Padding'
-
-function formatPoi(obj){
-    return `${obj.lat},${obj.lng}`
-}
-
+import Select from 'react-select';
+import './Direction.scss'
 function parserPolyline(polyline){
     var coors = [...polyline]
     for (var i = 2; i < coors.length ; i++)
@@ -19,10 +16,16 @@ function parserPolyline(polyline){
     return coors
 }
 
+function formatPoi(obj){
+    return `${obj.lat},${obj.lng}`
+}
 // planType 0 1 2
 export default () => {
     const [ map, setMapCtx ] = useState()
     const [ measureTitle, setMeasureTitle ] = useState(true)
+    const [ positionOpts, setPositionOpts ] = useState([])
+    const [ searchLocation, setSearchLocation ] = useState('')
+    const timer = useRef(null)
     // const [ planType, setPlanType ] = useState(0)
     const planType = useRef(0)
     const route = useRef()
@@ -136,6 +139,7 @@ export default () => {
         if (!startPoint.current || !endPoint.current){
             return
         }
+        
         api.direction({
             from: formatPoi(startPoint.current),
             to: formatPoi(endPoint.current),
@@ -143,9 +147,6 @@ export default () => {
             const routes = get(res, 'result.routes[0]', {})
             const { steps, polyline, distance, duration } = routes
             const formatLine = parserPolyline(polyline)
-            // const paths = formatLine.reduce(point => {
-            //     return new TMap.LatLng(get(point, 'location.lat'), get(point, 'location.lng'))
-            // })
             let paths = [],
                 i = 0;
             while(i + 1 <= formatLine.length){
@@ -160,7 +161,20 @@ export default () => {
                     duration: duration + '分钟'
                 }
             }])
+            getBounds([ startPoint.current, endPoint.current ])
+            // let position = new TMap.LatLng(item.location.lat, item.location.lng);
+            // newBounds.extend(position);
         })
+    }
+    const getBounds = list => {
+        let newBounds = new TMap.LatLngBounds();
+        list.forEach(item => {
+            let position = new TMap.LatLng(item.lat, item.lng);
+            newBounds.extend(position);
+        })
+        map.fitBounds(newBounds, {
+            padding: 100  // 边界与内容之间留的间距
+        });
     }
     const clearRouter = () => {
         cleanup()
@@ -175,8 +189,59 @@ export default () => {
             setMeasureTitle(true)
         })
     }
+    const laterInputLoc = value => {
+        if (timer.current){
+            clearTimeout(timer.current)
+            timer.current = null
+        }
+        timer.current = setTimeout(() => inputLoc(value), 500)
+    }
+    const inputLoc = value => {
+        if (!value)return
+        api.suggestion({
+            keyword: value,
+            region: '深圳市'
+        }).then(res => {
+            if(res.data)
+            setPositionOpts(res.data.map(option => {
+                option.label = option.title
+                option.value = option.title
+                return option
+            }) || [])
+        })
+    }
+    const displayOption = (option) => {
+        return <>
+            <div>{ option.title }</div>
+            <div>{ option.address }</div>
+        </>
+    }
+    const locChange = option => {
+        setSearchLocation(option)
+    }
+    const onSearchLocation = () => {
+        console.log(searchLocation);
+        const { location = null } = searchLocation
+        if(!location)return
+        map.setCenter(new TMap.LatLng(location.lat,location.lng))
+    }
+
     return <>
         <div style={{ textAlign: 'left', marginLeft: '25px' }}>
+            <div>
+                <Select
+                    value={searchLocation}
+                    onChange={locChange}
+                    options={positionOpts}
+                    onInputChange={laterInputLoc}
+                    className={'autocomplate'}
+                    style={{ width: '400px' }}
+                    formatOptionLabel={displayOption}
+                    placeholder={'请输入地址，仅限深圳市'}
+                />
+                <Button onClick={onSearchLocation} variant="secondary">搜索</Button>
+            </div>
+            <br/>
             <Button onClick={planRouter} variant="secondary">路径规划</Button>
             <Padding pad={'5px'}/>
             <Button onClick={clearRouter} variant="secondary">清空路径</Button>
@@ -186,6 +251,7 @@ export default () => {
         <MyMap getCtx={getRef} />
         <div className="footer">
             默认采用驾车路线<br/>
+            模糊搜索深圳市内位置<br/>
             点击地图设置起点<br/>
             点击地图设置终点<br/>
             点击【路线规划】按钮展示路径<br/>
