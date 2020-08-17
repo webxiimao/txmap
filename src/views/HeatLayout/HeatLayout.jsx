@@ -21,7 +21,7 @@ export default () => {
         y: 116.39756310116866
     }
     const getRef = (ref) => {
-        util.useLib('https://mapapi.qq.com/web/lbs/visualizationApi/demo/data/heat.js', 'trail').then(_ => {
+        util.useLib('https://mapapi.qq.com/web/lbs/visualizationApi/demo/data/heat.js', 'heat').then(_ => {
             setMap(ref)
         })
     }
