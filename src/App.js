@@ -16,7 +16,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <div style={{ background: '#fff' }}>
+          <div style={{ background: '#fff' }} className="links">
             <Link to="/">点标记</Link>
             <Padding />
             <Link to="/graphicsEditing">图形绘制</Link>

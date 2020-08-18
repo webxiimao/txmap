@@ -227,7 +227,7 @@ export default () => {
     }
 
     return <>
-        <div style={{ textAlign: 'left', marginLeft: '25px' }}>
+        <div style={{ textAlign: 'left', marginLeft: '25px', position:'relative', zIndex: '10' }}>
             <div>
                 <Select
                     value={searchLocation}

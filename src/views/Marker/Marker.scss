@@ -3,7 +3,11 @@
     padding: 20px;
     background-color: transparent;
     text-align: left;
+    position: relative;
+    z-index: 10;
 }
 .input.input-group {
     background: transparent;
+    position: relative;
+    z-index: 10;
 }

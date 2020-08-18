@@ -148,5 +148,9 @@ export default () => {
             <Button onClick={addMarker} variant={showAddMarker ? 'primary': 'secondary'}>{showAddMarker ? '取消手动添加marker': '手动添加marker'}</Button>
         </div>
         <MyMap getCtx={getRef} />
+        <div className="footer">
+            在输入框内输入搜索地址，点击搜索，在圆圈范围内，展示和搜索地址相关的位置标记<br/>
+            点击标记，获取详细地址
+        </div>
     </>
 }

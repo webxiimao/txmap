@@ -17,7 +17,7 @@ export default function MyMap({pos, mapConfig, getCtx }){
         // paddingTop: '30px',
         position: 'absolute',
         top: 0,
-        zIndex: '-1'
+        zIndex: '1'
     }
     return <div id="container" props={mapConfig} style={style}></div>
 }

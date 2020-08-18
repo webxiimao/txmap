@@ -14,28 +14,6 @@ const defaultPos = {
     y: 116.27446815226199
 }
 
-const simplePath = [
-    new TMap.LatLng(40.04051164600918, 116.27488518619089),
-    new TMap.LatLng(40.040943635857445, 116.27804611629756),
-    new TMap.LatLng(40.03951759379146, 116.2783762087081),
-    new TMap.LatLng(40.03891287066983, 116.2752049655744)
-];
-const holeyPath = [
-    [
-        new TMap.LatLng(40.0415122389407, 116.27144427159294),
-        new TMap.LatLng(40.03854281391625, 116.27218697924695),
-        new TMap.LatLng(40.03891287066983, 116.2752049655744),
-        new TMap.LatLng(40.04191838125587, 116.27460372613496)
-    ],
-    [
-        new TMap.LatLng(40.04108804322408, 116.27230486920075),
-        new TMap.LatLng(40.039472465232336, 116.27267032855252),
-        new TMap.LatLng(40.03972518377873, 116.2748159283218),
-        new TMap.LatLng(40.04137685760844, 116.2744386798397)
-    ]
-];
-
-
 function SelectedGeometryInfo(props){
     const { info } = props
     if(!info) return null
@@ -67,12 +45,21 @@ export default () => {
     const [ selectInfo, setSelectInfo ] = useState()
     const [ activeType, setActiveType ] = useState()
     const editor = useRef({})
+    const marker = useRef({})
     const getRef = (ref) => {
         setMapCtx(ref)
     }
     useSetStateCb(() => {
         initEditor()
+        initMarker()
     }, [ map ])
+    function initMarker(){
+        marker.current = new TMap.MultiMarker({
+            id: 'marker',
+            map,
+            geometries: []
+        });
+    }
     function initEditor(){
         editor.current = new TMap.tools.GeometryEditor({
             map, // 编辑器绑定的地图对象
@@ -145,8 +132,48 @@ export default () => {
         setSelectInfo(list)
         setModalShow(true)
     }
+    const [ searchKey, setSearchKey ] = useState()
+    const search = () => {
+        const list = editor.current.getSelectedList()
+        if (list && list.length == 1) {
+            const item = list[0]
+            if (item.paths){
+                alert('仅支持在圆形区域中搜索')
+            }
+            api.search({
+                keyword: searchKey,
+                boundary: `nearby(${item.center.lat},${item.center.lng},${item.radius},0)`
+            }).then(res => {
+                handleMarker(res.data)
+            })
+        } else {
+            alert('请选中单个图形')
+        }
+    }
+    const handleMarker = (list) => {
+        let markerArr = []
+        marker.current.setGeometries([]);
+        let newBounds = new TMap.LatLngBounds();
+        list.forEach( (item, index) => {
+            let position = new TMap.LatLng(item.location.lat, item.location.lng);
+            markerArr.push({
+              position: position,
+            //   properties: {
+            //     title: item.title,
+            //     address: item.address,
+            //     tel: item.tel!==' ' ? item.tel : '暂无',
+            //     category: item.category
+            //   }
+            });
+            // 寻找搜索结果的边界
+            newBounds.extend(position);
+            // 更新marker层，显示标记
+          });
+          console.log(markerArr);
+          marker.current.setGeometries(markerArr);
+    }
     return <>
-        <div style={{ textAlign: 'left', marginLeft: '20px' }}>
+        <div style={{ textAlign: 'left', marginLeft: '20px', position:'relative', zIndex: '10' }}>
             <Button  variant={toolType ? 'primary': 'secondary'} onClick={changeToolType}>{ toolType ? '取消编辑模式' : '编辑模式' }</Button>
             <br/>
             <br/>
